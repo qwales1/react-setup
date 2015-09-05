@@ -7,25 +7,18 @@ var webpackConfig = require('./webpack.config.js');
 var changed = require('gulp-changed');
 var del = require('del');
 var paths = {
-  scripts : ['./src/javascripts/**/*.js',],
   styles : './src/stylesheets/main.scss',
   dist: './dist',
   images: './src/images/**/*',
-  fonts: './src/fonts/**/*'
+  fonts: './src/fonts/**/*',
+  index: './src/index.html'
 }
 gulp.task('css',['clean'], function() {
-  var stream = gulp.src(paths.styles)
+    return gulp.src(paths.styles)
         .pipe(sass())
         .pipe(concat('main.css'))
         .pipe(minifyCss())
-        .pipe(gulp.dest('./build/stylesheets'));
-  return stream;
-});
-gulp.task('js', ['clean'],function () {
-  var stream = gulp.src(paths.scripts)
-        .pipe(concat('main.js'))
-        .pipe(gulp.dest('./build/javascripts'));
-  return stream;
+        .pipe(gulp.dest('./dist/stylesheets'));
 });
 
 gulp.task('watch', function() {
@@ -33,7 +26,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('webpack', ['clean'], function(done){
-  webpack(clientConfig).run(function(err, stats){
+  webpack(webpackConfig).run(function(err, stats){
     if(err){
       console.log('Error', err);
     } else {
@@ -43,23 +36,26 @@ gulp.task('webpack', ['clean'], function(done){
   });
 });
 
+gulp.task('index', ['clean'], function(){
+    return gulp.src(paths.index)
+    .pipe(gulp.dest(paths.dist));
+})
 
 gulp.task('images', ['clean'], function(){
-  var stream = gulp.src(paths.images)
-    .pipe(gulp.dest('./build/images'));
-    return stream;
+     return gulp.src(paths.images)
+    .pipe(gulp.dest('./dist/images'));
 });
 
 gulp.task('fonts', ['clean'], function(){
-  var stream = gulp.src(paths.fonts)
-    .pipe(gulp.dest('./build/fonts'));
-    return stream;
+     return gulp.src(paths.fonts)
+    .pipe(gulp.dest('./dist/fonts'));
+
 });
 
 gulp.task('clean', function(done){
-  del([paths.dist + '/**/*'], done);
+  return del([paths.dist + '/**/*']);
 });
 
-gulp.task('build', ['clean','webpack','css','js','images','fonts']);
+gulp.task('build', ['clean','index','webpack','css','images','fonts']);
 
 gulp.task('default', ['build']);

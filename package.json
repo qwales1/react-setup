@@ -29,6 +29,9 @@
     "webpack": "^1.12.1"
   },
   "dependencies": {
-    "del": "^2.0.1"
+    "del": "^2.0.1",
+    "gulp-rimraf": "^0.1.1",
+    "react": "^0.13.3",
+    "react-router": "^0.13.3"
   }
 }
